@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QuickDev - Emirhan Gürbüz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #10b981;
+            --bg: #09090b;
+            --card: #18181b;
+            --border: #27272a;
+            --text: #fafafa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 350px;
+            min-width: 350px;
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            padding: 15px;
+            background: #27272a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            border-color: var(--accent);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 60px;
+            background: #020617;
+            overflow-y: auto;
+        }
+
+        .tool-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .tool-container.active {
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            background: #011627;
+            border: 1px solid var(--border);
+            color: #d6deeb;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            margin-bottom: 20px;
+            outline: none;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .header-nav {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            font-size: 12px;
+            color: #475569;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="header-nav">
+            <h2 style="margin:0; font-size: 22px; color: var(--accent);">QuickDev</h2>
+            <span style="font-size: 11px; color: #71717a;">Geliştirici: Emirhan Gürbüz | Series #5</span>
+        </div>
+
+        <div class="nav-item active" onclick="showTool('base64')"><i class="fa-solid fa-shield-halved"></i> Base64
+            Encode/Decode</div>
+        <div class="nav-item" onclick="showTool('url')"><i class="fa-solid fa-link"></i> URL Encoder/Decoder</div>
+        <div class="nav-item" onclick="showTool('hash')"><i class="fa-solid fa-fingerprint"></i> SHA-256 Hasher</div>
+        <div class="nav-item" onclick="showTool('timestamp')"><i class="fa-solid fa-clock"></i> Unix Timestamp</div>
+
+        <div
+            style="margin-top: auto; font-size: 11px; color: #4b5563; padding-top: 20px; border-top: 1px solid var(--border);">
+            Quick Markası Altında Bir <br> <strong>Emirhan Gürbüz</strong> Projesidir.
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="base64" class="tool-container active">
+            <h1 style="color:var(--accent)">Base64 Çevirici</h1>
+            <textarea id="b64-input" placeholder="Metin veya Base64 verisi girin..."></textarea>
+            <div class="btn-group">
+                <button class="btn" onclick="b64Encode()">ENCODE (Şifrele)</button>
+                <button class="btn" onclick="b64Decode()">DECODE (Çöz)</button>
+            </div>
+        </div>
+
+        <div id="url" class="tool-container">
+            <h1 style="color:var(--accent)">URL Çevirici</h1>
+            <textarea id="url-input" placeholder="URL veya metin girin..."></textarea>
+            <div class="btn-group">
+                <button class="btn" onclick="urlEncode()">URL ENCODE</button>
+                <button class="btn" onclick="urlDecode()">URL DECODE</button>
+            </div>
+        </div>
+
+        <div id="hash" class="tool-container">
+            <h1 style="color:var(--accent)">SHA-256 Hash Üretici</h1>
+            <textarea id="hash-input" placeholder="Hash'lenecek metni girin..."></textarea>
+            <button class="btn" onclick="generateHash()" style="width:100%">HASH OLUŞTUR</button>
+            <p id="hash-output" style="margin-top:20px; font-family:monospace; color:#10b981; word-break:break-all;">
+            </p>
+        </div>
+
+        <div id="timestamp" class="tool-container">
+            <h1 style="color:var(--accent)">Unix Timestamp</h1>
+            <textarea id="ts-input" placeholder="Timestamp (1700000000) veya Tarih girin..."></textarea>
+            <div class="btn-group">
+                <button class="btn" onclick="tsToDate()">TARİHE ÇEVİR</button>
+                <button class="btn" onclick="dateToTs()">TIMESTAMP'A ÇEVİR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="watermark">QuickDev by Emirhan Gürbüz</div>
+
+    <script>
+        function showTool(id) {
+            document.querySelectorAll('.tool-container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Base64 Logic
+        function b64Encode() {
+            const input = document.getElementById('b64-input');
+            input.value = btoa(unescape(encodeURIComponent(input.value)));
+        }
+        function b64Decode() {
+            const input = document.getElementById('b64-input');
+            try { input.value = decodeURIComponent(escape(atob(input.value))); }
+            catch (e) { alert("Geçersiz Base64 formatı!"); }
+        }
+
+        // URL Logic
+        function urlEncode() {
+            const input = document.getElementById('url-input');
+            input.value = encodeURIComponent(input.value);
+        }
+        function urlDecode() {
+            const input = document.getElementById('url-input');
+            input.value = decodeURIComponent(input.value);
+        }
+
+        // SHA-256 Logic
+        async function generateHash() {
+            const msg = document.getElementById('hash-input').value;
+            const msgBuffer = new TextEncoder().encode(msg);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('hash-output').innerText = "Sonuç: " + hashHex;
+        }
+
+        // Timestamp Logic
+        function tsToDate() {
+            const input = document.getElementById('ts-input');
+            const date = new Date(parseInt(input.value) * 1000);
+            input.value = date.toLocaleString('tr-TR');
+        }
+        function dateToTs() {
+            const input = document.getElementById('ts-input');
+            const ts = Math.floor(new Date(input.value).getTime() / 1000);
+            if (!isNaN(ts)) input.value = ts;
+            else alert("Lütfen geçerli bir tarih formatı girin (Örn: 2026-02-10)");
+        }
+    </script>
+
+</body>
+
+</html>
